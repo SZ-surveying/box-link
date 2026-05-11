@@ -157,17 +157,43 @@ jobs:
       - name: Show release assets
         shell: bash
         run: |
-          find release-assets -maxdepth 2 -type f | sort
+          find release-assets -maxdepth 4 -type f | sort
+
+      - name: Flatten release assets
+        shell: bash
+        run: |
+          mkdir -p release-bundle
+          find release-assets -type f \( -name '*.tar.gz' -o -name '*.pkg' -o -name '*.rb' -o -name 'checksums.txt' \) -exec cp {} release-bundle/ \;
+          find release-bundle -maxdepth 1 -type f | sort
+
+          tar_count=$(find release-bundle -maxdepth 1 -type f -name '*.tar.gz' | wc -l | tr -d ' ')
+          pkg_count=$(find release-bundle -maxdepth 1 -type f -name '*.pkg' | wc -l | tr -d ' ')
+          formula_count=$(find release-bundle -maxdepth 1 -type f -name '*.rb' | wc -l | tr -d ' ')
+
+          if [[ "$tar_count" -lt 2 ]]; then
+            echo "expected at least 2 release tarballs in release-bundle/, found $tar_count" >&2
+            exit 1
+          fi
+
+          if [[ "$pkg_count" -lt 1 ]]; then
+            echo "expected at least 1 pkg artifact in release-bundle/, found $pkg_count" >&2
+            exit 1
+          fi
+
+          if [[ "$formula_count" -lt 1 ]]; then
+            echo "expected at least 1 Homebrew formula in release-bundle/, found $formula_count" >&2
+            exit 1
+          fi
 
       - name: Refresh release checksums
         shell: bash
         run: |
           if command -v shasum >/dev/null 2>&1; then
-            shasum -a 256 release-assets/*.tar.gz release-assets/*.pkg > release-assets/checksums.txt
+            shasum -a 256 release-bundle/*.tar.gz release-bundle/*.pkg > release-bundle/checksums.txt
           else
-            sha256sum release-assets/*.tar.gz release-assets/*.pkg > release-assets/checksums.txt
+            sha256sum release-bundle/*.tar.gz release-bundle/*.pkg > release-bundle/checksums.txt
           fi
-          cat release-assets/checksums.txt
+          cat release-bundle/checksums.txt
 
       - name: Generate release notes
         id: git-cliff
@@ -185,8 +211,8 @@ jobs:
           name: box-link ${{ needs.meta.outputs.tag }}
           body: ${{ steps.git-cliff.outputs.content }}
           files: |
-            release-assets/*.tar.gz
-            release-assets/*.pkg
-            release-assets/checksums.txt
-            release-assets/*.rb
+            release-bundle/*.tar.gz
+            release-bundle/*.pkg
+            release-bundle/checksums.txt
+            release-bundle/*.rb
           fail_on_unmatched_files: true

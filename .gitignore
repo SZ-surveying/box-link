@@ -1,7 +1,6 @@
 .vscode/
 bin/
 dist/
-CHANGELOG.md
 
 .gocache/
 .cache/
