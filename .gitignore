@@ -1,0 +1,9 @@
+.vscode/
+bin/
+dist/
+CHANGELOG.md
+
+.gocache/
+.cache/
+
+.DS_Store

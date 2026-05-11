@@ -1,0 +1,192 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  meta:
+    name: Release Metadata
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+      version: ${{ steps.meta.outputs.version }}
+
+    steps:
+      - name: Validate tag format
+        id: meta
+        shell: bash
+        run: |
+          if [[ ! "${GITHUB_REF_NAME}" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            echo "Release tags must match v<major>.<minor>.<patch>." >&2
+            exit 1
+          fi
+
+          echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+  archives:
+    name: Build Archives and Formula
+    needs: meta
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: release
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Run tests
+        run: go test ./...
+
+      - name: Build release archives
+        shell: bash
+        run: |
+          ./packaging/package.sh --release --version "v${{ needs.meta.outputs.version }}"
+
+      - name: Generate Homebrew formula
+        shell: bash
+        run: |
+          chmod +x ./packaging/generate-homebrew-formula.sh
+          ./packaging/generate-homebrew-formula.sh --version "v${{ needs.meta.outputs.version }}" --repo "${{ github.repository }}"
+
+      - name: Show packaged files
+        shell: bash
+        run: |
+          find dist -maxdepth 2 -type f | sort
+          echo "---"
+          find packaging/homebrew -maxdepth 1 -type f | sort
+
+      - name: Generate release notes
+        id: git-cliff
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: -vv --latest --strip header
+        env:
+          OUTPUT: git-cliff-release-notes.md
+          GITHUB_REPO: ${{ github.repository }}
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: box-link-release-archives
+          path: |
+            dist/*.tar.gz
+            dist/checksums.txt
+            packaging/homebrew/*.rb
+
+  pkg:
+    name: Build macOS Installer
+    needs: meta
+    runs-on: macos-latest
+    timeout-minutes: 30
+    environment:
+      name: release
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build pkg installer
+        shell: bash
+        run: |
+          chmod +x ./packaging/build-pkg.sh
+          ./packaging/build-pkg.sh --version "v${{ needs.meta.outputs.version }}" --identifier "com.example.box-link"
+
+      - name: Show pkg files
+        shell: bash
+        run: |
+          find dist -maxdepth 2 -type f | sort
+
+      - name: Upload pkg artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: box-link-release-pkg
+          path: |
+            dist/*.pkg
+
+  publish:
+    name: Publish Release
+    needs:
+      - meta
+      - archives
+      - pkg
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: release
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download release archives
+        uses: actions/download-artifact@v4
+        with:
+          name: box-link-release-archives
+          path: release-assets
+
+      - name: Download pkg artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: box-link-release-pkg
+          path: release-assets
+
+      - name: Show release assets
+        shell: bash
+        run: |
+          find release-assets -maxdepth 2 -type f | sort
+
+      - name: Refresh release checksums
+        shell: bash
+        run: |
+          if command -v shasum >/dev/null 2>&1; then
+            shasum -a 256 release-assets/*.tar.gz release-assets/*.pkg > release-assets/checksums.txt
+          else
+            sha256sum release-assets/*.tar.gz release-assets/*.pkg > release-assets/checksums.txt
+          fi
+          cat release-assets/checksums.txt
+
+      - name: Generate release notes
+        id: git-cliff
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: -vv --latest --strip header
+        env:
+          OUTPUT: git-cliff-release-notes.md
+          GITHUB_REPO: ${{ github.repository }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: box-link ${{ needs.meta.outputs.tag }}
+          body: ${{ steps.git-cliff.outputs.content }}
+          files: |
+            release-assets/*.tar.gz
+            release-assets/*.pkg
+            release-assets/checksums.txt
+            release-assets/*.rb
+          fail_on_unmatched_files: true

@@ -1,0 +1,113 @@
+name: Main Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".golangci.yml"
+      - ".github/workflows/main-validation.yml"
+      - "cmd/**"
+      - "internal/**"
+      - "scripts/**"
+      - "packaging/**"
+      - "go.mod"
+      - "go.sum"
+      - "justfile"
+      - "lefthook.yml"
+  push:
+    branches: [main, master]
+    paths:
+      - ".golangci.yml"
+      - ".github/workflows/main-validation.yml"
+      - "cmd/**"
+      - "internal/**"
+      - "scripts/**"
+      - "packaging/**"
+      - "go.mod"
+      - "go.sum"
+      - "justfile"
+      - "lefthook.yml"
+
+permissions:
+  contents: read
+
+env:
+  GOLANGCI_LINT_VERSION: "v2.11.4"
+
+jobs:
+  validate:
+    name: Format and Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      format_result: ${{ steps.format.outcome }}
+      check_result: ${{ steps.check.outcome }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Install golangci-lint
+        shell: bash
+        run: |
+          go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@${GOLANGCI_LINT_VERSION}
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      - name: Make scripts executable
+        shell: bash
+        run: |
+          chmod +x ./scripts/format.sh ./scripts/check.sh ./packaging/package.sh ./packaging/install.sh
+
+      - name: Verify formatting
+        id: format
+        run: ./scripts/format.sh --scope all --check
+
+      - name: Run project checks
+        id: check
+        env:
+          BOX_LINK_CHECK_PROFILE: ci
+        run: ./scripts/check.sh --ci
+
+  summary:
+    name: Validation Summary
+    if: always()
+    needs: validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Publish summary
+        env:
+          VALIDATE_RESULT: ${{ needs.validate.result }}
+          FORMAT_RESULT: ${{ needs.validate.outputs.format_result }}
+          CHECK_RESULT: ${{ needs.validate.outputs.check_result }}
+        run: |
+          label_for() {
+            case "$1" in
+              success) echo "✅ success" ;;
+              failure) echo "❌ failure" ;;
+              cancelled) echo "🟡 cancelled" ;;
+              skipped) echo "⚪ skipped" ;;
+              "") echo "⚪ skipped" ;;
+              *) echo "🟣 $1" ;;
+            esac
+          }
+
+          {
+            echo "## Main Validation Summary"
+            echo
+            echo "| Step | Result |"
+            echo "| --- | --- |"
+            echo "| formatting | $(label_for "$FORMAT_RESULT") |"
+            echo "| checks | $(label_for "$CHECK_RESULT") |"
+            echo "| overall job | $(label_for "$VALIDATE_RESULT") |"
+            echo
+            echo "Checks executed from shared scripts:"
+            echo "- \`./scripts/format.sh --scope all --check\`"
+            echo "- \`./scripts/check.sh --ci\`"
+          } >> "$GITHUB_STEP_SUMMARY"

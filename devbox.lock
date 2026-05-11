@@ -1,0 +1,201 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "git-cliff@2.11.0": {
+      "last_modified": "2025-12-31T03:27:36Z",
+      "resolved": "github:NixOS/nixpkgs/f665af0cdb70ed27e1bd8f9fdfecaf451260fc55#git-cliff",
+      "source": "devbox-search",
+      "version": "2.11.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/188kddgfalnliycpyrmhqvwsmcvxwvnz-git-cliff-2.11.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/188kddgfalnliycpyrmhqvwsmcvxwvnz-git-cliff-2.11.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/nd9n0zlhnwc7jjybfq34wbwsn229ldzi-git-cliff-2.11.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/nd9n0zlhnwc7jjybfq34wbwsn229ldzi-git-cliff-2.11.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/8vmab71n8db9y5j1x3k9xzvn7q7n80bj-git-cliff-2.11.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/8vmab71n8db9y5j1x3k9xzvn7q7n80bj-git-cliff-2.11.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/bl3kwa6yq6955vkwvpb14rlqkfyjwbg2-git-cliff-2.11.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/bl3kwa6yq6955vkwvpb14rlqkfyjwbg2-git-cliff-2.11.0"
+        }
+      }
+    },
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2026-05-11T00:16:55Z",
+      "resolved": "github:NixOS/nixpkgs/c6e5ca3c836a5f4dd9af9f2c1fc1c38f0fac988a?lastModified=1778458615&narHash=sha256-cY07EsdhBJ8tFXPzDYevgqxRev9ZLxFonuq9wmq5kwg%3D"
+    },
+    "go@1.26.2": {
+      "last_modified": "2026-04-23T13:07:47Z",
+      "resolved": "github:NixOS/nixpkgs/01fbdeef22b76df85ea168fbfe1bfd9e63681b30#go",
+      "source": "devbox-search",
+      "version": "1.26.2",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/fkzywh7rg8lg1n2p0r161iqjwhz540wx-go-1.26.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/fkzywh7rg8lg1n2p0r161iqjwhz540wx-go-1.26.2"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/w4i7p78y3735jcy69sk4lcy9zyxr0cav-go-1.26.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/w4i7p78y3735jcy69sk4lcy9zyxr0cav-go-1.26.2"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/g0b45l45nlb1kqiywzja7fh49yn7lla5-go-1.26.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/g0b45l45nlb1kqiywzja7fh49yn7lla5-go-1.26.2"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/dimnagks1qsp7180yw74z0npp7z2ihs3-go-1.26.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/dimnagks1qsp7180yw74z0npp7z2ihs3-go-1.26.2"
+        }
+      }
+    },
+    "golangci-lint@2.11.0": {
+      "last_modified": "2026-03-07T23:46:50Z",
+      "resolved": "github:NixOS/nixpkgs/0e6cdd5be64608ef630c2e41f8d51d484468492f#golangci-lint",
+      "source": "devbox-search",
+      "version": "2.11.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/2kwyn9j1d4hnj55clp4xqa0yvs2qmn86-golangci-lint-2.11.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/2kwyn9j1d4hnj55clp4xqa0yvs2qmn86-golangci-lint-2.11.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/8jgrrw39k6x57ha8q9hg68znh6vqb33m-golangci-lint-2.11.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/8jgrrw39k6x57ha8q9hg68znh6vqb33m-golangci-lint-2.11.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/08d249n2hlmfh5fvvysx90hmjwqyjl2i-golangci-lint-2.11.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/08d249n2hlmfh5fvvysx90hmjwqyjl2i-golangci-lint-2.11.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/7vnd49xzb84ghk9p7vzqaqyqmy6bqd90-golangci-lint-2.11.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/7vnd49xzb84ghk9p7vzqaqyqmy6bqd90-golangci-lint-2.11.0"
+        }
+      }
+    },
+    "lefthook@2.0.12": {
+      "last_modified": "2025-12-31T03:27:36Z",
+      "resolved": "github:NixOS/nixpkgs/f665af0cdb70ed27e1bd8f9fdfecaf451260fc55#lefthook",
+      "source": "devbox-search",
+      "version": "2.0.12",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/fpj8c2iqmlxz0792km8dnl3xj04ss9js-lefthook-2.0.12",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/fpj8c2iqmlxz0792km8dnl3xj04ss9js-lefthook-2.0.12"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/zisq2b3kwvk6jpv0jllm9s3xl8jcj8g0-lefthook-2.0.12",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/zisq2b3kwvk6jpv0jllm9s3xl8jcj8g0-lefthook-2.0.12"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/2phw27jj90bdvy9f2bbqx79kiz02rh7p-lefthook-2.0.12",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/2phw27jj90bdvy9f2bbqx79kiz02rh7p-lefthook-2.0.12"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/sdn30imkqyldi9lmd8gap1acdxz6xcrl-lefthook-2.0.12",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/sdn30imkqyldi9lmd8gap1acdxz6xcrl-lefthook-2.0.12"
+        }
+      }
+    }
+  }
+}

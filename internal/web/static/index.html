@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>box-link console</title>
+    <link rel="stylesheet" href="/app.css">
+  </head>
+  <body>
+    <div class="shell"></div>
+    <main class="app">
+      <section class="hero">
+        <p class="eyebrow">LOCAL LINK CONSOLE</p>
+        <h1>box-link</h1>
+        <p class="lede">A local control page for direct box networking on macOS.</p>
+        <div class="actions">
+          <button data-action="status">Refresh Status</button>
+          <button data-action="doctor">Run Diagnose</button>
+          <button data-action="on" class="primary">Connect Box</button>
+          <button data-action="off" class="danger">Restore DHCP</button>
+        </div>
+      </section>
+
+      <section class="panel-grid">
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Config</h2>
+            <span id="configState" class="badge">loading</span>
+          </div>
+          <dl id="configList" class="kv"></dl>
+        </article>
+
+        <article class="panel wide">
+          <div class="panel-head">
+            <h2>Status</h2>
+            <span id="statusState" class="badge quiet">idle</span>
+          </div>
+          <div id="statusView" class="status-grid">Waiting for live status...</div>
+        </article>
+
+        <article class="panel wide">
+          <div class="panel-head">
+            <h2>Diagnostics</h2>
+            <span id="doctorState" class="badge quiet">idle</span>
+          </div>
+          <div id="doctorView" class="doctor-list">Run diagnostics to inspect the interface, route, and reachability.</div>
+        </article>
+
+        <article class="panel wide">
+          <div class="panel-head">
+            <h2>Logs</h2>
+            <span id="logState" class="badge quiet">offline</span>
+          </div>
+          <div id="logView" class="log-list"></div>
+        </article>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

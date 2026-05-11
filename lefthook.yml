@@ -1,0 +1,21 @@
+commit-msg:
+  commands:
+    conventional-commit:
+      run: |
+        commit_msg_file={1}
+        commit_msg="$(cat "$commit_msg_file")"
+
+        echo "$commit_msg" | grep -qiE "^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?(!)?: .{1,}|^first commit$" || {
+          echo "Commit message must follow Conventional Commits." >&2
+          echo "Example: feat(ui): add local status panel" >&2
+          exit 1
+        }
+
+pre-commit:
+  parallel: false
+  commands:
+    format:
+      run: ./scripts/format.sh --scope staged
+      stage_fixed: true
+    check:
+      run: ./scripts/check.sh --pre-commit
